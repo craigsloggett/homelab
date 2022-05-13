@@ -85,9 +85,6 @@ apt-get -y autoremove
 # Install the Container Runtime Interface
 apt-get -y install cri-o cri-o-runc
 
-# Install the Container Networking Plugins
-apt-get -y install containernetworking-plugins
-
 # Enable and Start the Container Runtime Interface
 systemctl enable crio
 systemctl start crio
