@@ -38,6 +38,16 @@ apt-get install -y -t bullseye-backports \
 	firmware-brcm80211 \
 	wireless-regdb
 
+# Update the Hosts File
+hostname="$(hostname)"
+
+cat > /etc/hosts <<- EOF
+127.0.0.1	${hostname}.localdomain ${hostname}
+::1		${hostname}.localdomain ${hostname} ip6-localhost ip6-loopback
+ff02::1		ip6-allnodes
+ff02::2		ip6-allrouters
+EOF
+
 # Install sudo
 if ! command -v sudo; then
 	apt-get install -y sudo
@@ -47,9 +57,6 @@ cat > /etc/sudoers.d/no-password <<- 'EOF'
 # Allow members of group sudo to execute any command without a password
 %sudo	ALL=(ALL:ALL) NOPASSWD:ALL
 EOF
-
-# Set vi as the Default Editor
-update-alternatives --set editor /usr/bin/vim.tiny
 
 # Add a Regular User
 if ! id "${USERNAME}"; then
@@ -66,12 +73,5 @@ chmod 700 "${ssh_directory}"
 chmod 600 "${ssh_directory}/authorized_keys"
 chown -R "${USERNAME}:${USERNAME}" "${ssh_directory}"
 
-# Update the Hosts File
-hostname="$(hostname)"
-
-cat > /etc/hosts <<- EOF
-127.0.0.1	${hostname}.localdomain ${hostname}
-::1		${hostname}.localdomain ${hostname} ip6-localhost ip6-loopback
-ff02::1		ip6-allnodes
-ff02::2		ip6-allrouters
-EOF
+# Set vi as the Default Editor
+update-alternatives --set editor /usr/bin/vim.tiny
