@@ -6,38 +6,27 @@
 set -o errexit
 set -o nounset
 
-: "${CONTROL_PLANE_ENDPOINT:=192.168.1.110}"
 : "${USERNAME}"
 
 # Prepare the kubeadm.conf File
-cat > /etc/kubernetes/kubeadm-init.yaml <<- EOF
-# Use Default Init Configuration
-
-# apiVersion: kubeadm.k8s.io/v1beta3
-# kind: InitConfiguration
-
-# ---
-
+cat > /etc/kubernetes/kubeadm-config.yaml <<- 'EOF'
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
-controlPlaneEndpoint: "${CONTROL_PLANE_ENDPOINT}"
+networking:
+  podSubnet: "10.244.0.0/16"
 
 ---
 
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
 kind: KubeProxyConfiguration
 mode: "ipvs"
-
-# Use Default Kubelet Configuration
-
-# ---
-# apiVersion: kubelet.config.k8s.io/v1beta1
-# kind: KubeletConfiguration
+ipvs:
+  strictARP: true
 EOF
 
 # Initialize the Control Plane
 if [ ! -f /etc/kubernetes/admin.conf ]; then
-	kubeadm init --config /etc/kubernetes/kubeadm-init.yaml
+	kubeadm init --config /etc/kubernetes/kubeadm-config.yaml
 fi
 
 # Copy the Kubeconfig to Access the Cluster

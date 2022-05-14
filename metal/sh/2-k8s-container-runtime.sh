@@ -12,36 +12,6 @@ set -o nounset
 export DEBIAN_FRONTEND=noninteractive
 export LANG=C.UTF-8
 
-# Enable Overlay Networking
-if ! grep -q 'overlay' /etc/modules-load.d/modules.conf; then
-	printf '%s\n' "overlay" >> /etc/modules-load.d/modules.conf
-fi
-
-# Enable Bridge Networking
-if ! grep -q 'br_netfilter' /etc/modules-load.d/modules.conf; then
-	printf '%s\n' "br_netfilter" >> /etc/modules-load.d/modules.conf
-fi
-
-# Manually Load Kernel Modules
-modprobe overlay
-modprobe br_netfilter
-
-# Enable iptables Filtering on the Bridge Network
-if ! grep -q 'net.bridge.bridge-nf-call-iptables' /etc/sysctl.d/local.conf; then
-	cat >> /etc/sysctl.d/local.conf <<- 'EOF'
-	net.bridge.bridge-nf-call-iptables = 1
-	net.bridge.bridge-nf-call-ip6tables = 1
-	EOF
-fi
-
-# Enable IP Forwarding
-if ! grep -q 'net.ipv4.ip_forward' /etc/sysctl.d/local.conf; then
-	printf '%s\n' "net.ipv4.ip_forward = 1" >> /etc/sysctl.d/local.conf
-fi
-
-# Reload Kernel Variables
-sysctl --system
-
 # Install Dependencies
 apt-get install -y \
 	curl \
