@@ -14,6 +14,7 @@ apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
 networking:
   podSubnet: "10.244.0.0/16"
+controlPlaneEndpoint: "controller-0"
 
 ---
 
