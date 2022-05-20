@@ -55,4 +55,3 @@ apt-get -y install cri-o cri-o-runc
 
 # Enable and Start the Container Runtime Interface
 systemctl enable crio
-systemctl start crio

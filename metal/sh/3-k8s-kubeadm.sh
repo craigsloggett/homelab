@@ -6,11 +6,6 @@
 set -o errexit
 set -o nounset
 
-: "${CONTROL_IP:=192.168.1.110}"
-: "${NODE_0_IP:=192.168.1.120}"
-: "${NODE_1_IP:=192.168.1.121}"
-: "${NODE_2_IP:=192.168.1.122}"
-
 export DEBIAN_FRONTEND=noninteractive
 export LANG=C.UTF-8
 
@@ -36,20 +31,8 @@ apt-get -y autoremove
 # Install the Kubernetes Components
 apt-get -y install kubelet kubeadm kubectl
 
+# Restart the Container Runtime Interface
+systemctl restart crio
+
 # Exclude the Kubernetes Packages from System Upgrades
 apt-mark hold kubelet kubeadm kubectl
-
-# Update the Hosts File with Cluster IPs
-hostname="$(hostname)"
-
-cat > /etc/hosts <<- EOF
-127.0.0.1	${hostname}.localdomain ${hostname}
-::1		${hostname}.localdomain ${hostname} ip6-localhost ip6-loopback
-ff02::1		ip6-allnodes
-ff02::2		ip6-allrouters
-
-${CONTROL_IP}	controller-0
-${NODE_0_IP}	node-0
-${NODE_1_IP}	node-1
-${NODE_2_IP}	node-2
-EOF
