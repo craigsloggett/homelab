@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# k8s-kubeadm.sh
+# kubeadm.sh
 
 # Globally enable exit-on-error and require variables to be set.
 set -o errexit
@@ -36,3 +36,7 @@ systemctl restart crio
 
 # Exclude the Kubernetes Packages from System Upgrades
 apt-mark hold kubelet kubeadm kubectl
+
+# Reboot Nodes
+printf '%s%s\n' "Rebooting nodes, next steps are to initialize the cluster" \
+		"from one of the control-plane nodes using kubectl."

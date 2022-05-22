@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# k8s-container-runtime.sh
+# container-runtime.sh
 
 # Globally enable exit-on-error and require variables to be set.
 set -o errexit
