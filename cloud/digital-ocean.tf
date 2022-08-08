@@ -3,9 +3,9 @@ resource "digitalocean_ssh_key" "default" {
   public_key = file(var.ssh_key_path)
 }
 
-resource "digitalocean_droplet" "wireguard" {
+resource "digitalocean_droplet" "droplet" {
   image     = "debian-11-x64"
-  name      = "wireguard"
+  name      = "n1mbu5"
   region    = "tor1"
   size      = "s-1vcpu-1gb"
   user_data = file("cloud-init.yaml")
@@ -14,7 +14,7 @@ resource "digitalocean_droplet" "wireguard" {
 
 resource "digitalocean_firewall" "ssh" {
   name        = "SSH"
-  droplet_ids = [digitalocean_droplet.wireguard.id]
+  droplet_ids = [digitalocean_droplet.droplet.id]
 
   inbound_rule {
     protocol         = "tcp"
@@ -25,7 +25,7 @@ resource "digitalocean_firewall" "ssh" {
 
 resource "digitalocean_firewall" "wireguard" {
   name        = "Wireguard"
-  droplet_ids = [digitalocean_droplet.wireguard.id]
+  droplet_ids = [digitalocean_droplet.droplet.id]
 
   inbound_rule {
     protocol         = "udp"
@@ -36,7 +36,7 @@ resource "digitalocean_firewall" "wireguard" {
 
 resource "digitalocean_firewall" "outbound" {
   name        = "Outbound"
-  droplet_ids = [digitalocean_droplet.wireguard.id]
+  droplet_ids = [digitalocean_droplet.droplet.id]
 
   outbound_rule {
     protocol              = "tcp"
