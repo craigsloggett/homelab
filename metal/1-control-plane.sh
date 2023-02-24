@@ -10,10 +10,11 @@ set -o nounset
 
 # Prepare the kubeadm.conf File
 cat > /etc/kubernetes/kubeadm-config.yaml <<- 'EOF'
+	---
 	apiVersion: kubeadm.k8s.io/v1beta3
 	kind: InitConfiguration
 	localAPIEndpoint:
-	  advertiseAddress: "192.168.1.10"
+	  advertiseAddress: "192.168.1.110"
 	  bindPort: 6443
 	skipPhases:
 	  - addon/kube-proxy
