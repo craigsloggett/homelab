@@ -7,7 +7,7 @@ set -o errexit
 set -o nounset
 
 : "${USERNAME}"
-: "${CRIO_VERSION:=1.23}"
+: "${CRIO_VERSION:=1.26}"
 
 #
 # Base OS
@@ -18,10 +18,10 @@ export LANG=C.UTF-8
 
 # Update the Debian Bullseye Sources List
 cat > /etc/apt/sources.list <<- 'EOF'
-deb http://deb.debian.org/debian bullseye main contrib non-free
-deb http://deb.debian.org/debian bullseye-updates main contrib non-free
-deb http://deb.debian.org/debian bullseye-backports main contrib non-free
-deb http://security.debian.org/debian-security/ bullseye-security main contrib non-free
+	deb http://deb.debian.org/debian bullseye main contrib non-free
+	deb http://deb.debian.org/debian bullseye-updates main contrib non-free
+	deb http://deb.debian.org/debian bullseye-backports main contrib non-free
+	deb http://security.debian.org/debian-security/ bullseye-security main contrib non-free
 EOF
 
 # Update the Apt Cache
@@ -29,7 +29,7 @@ apt-get update
 
 # Add the Locale to Defaults
 cat > /etc/default/locale <<- 'EOF'
-LANG=C.UTF-8
+	LANG=C.UTF-8
 EOF
 
 # Upgrade the System
@@ -47,10 +47,10 @@ apt-get install -y -t bullseye-backports \
 hostname="$(hostname)"
 
 cat > /etc/hosts <<- EOF
-127.0.0.1	${hostname}.localdomain ${hostname}
-::1		${hostname}.localdomain ${hostname} ip6-localhost ip6-loopback
-ff02::1		ip6-allnodes
-ff02::2		ip6-allrouters
+	127.0.0.1 ${hostname}.localdomain ${hostname}
+	::1        ${hostname}.localdomain ${hostname} ip6-localhost ip6-loopback
+	ff02::1    ip6-allnodes
+	ff02::2    ip6-allrouters
 EOF
 
 # Install sudo
@@ -59,8 +59,8 @@ if ! command -v sudo; then
 fi
 
 cat > /etc/sudoers.d/no-password <<- 'EOF'
-# Allow members of group sudo to execute any command without a password
-%sudo	ALL=(ALL:ALL) NOPASSWD:ALL
+	# Allow members of group sudo to execute any command without a password
+	%sudo ALL=(ALL:ALL) NOPASSWD:ALL
 EOF
 
 # Add a Regular User
@@ -102,8 +102,8 @@ modprobe br_netfilter
 # Enable iptables Filtering on the Bridge Network
 if ! grep -q 'net.bridge.bridge-nf-call-iptables' /etc/sysctl.d/local.conf; then
 	cat >> /etc/sysctl.d/local.conf <<- 'EOF'
-	net.bridge.bridge-nf-call-iptables = 1
-	net.bridge.bridge-nf-call-ip6tables = 1
+		net.bridge.bridge-nf-call-iptables = 1
+		net.bridge.bridge-nf-call-ip6tables = 1
 	EOF
 fi
 
@@ -119,11 +119,11 @@ fi
 
 if ! grep -q 'ip_vs' /etc/modules-load.d/modules.conf; then
 	cat >> /etc/modules-load.d/modules.conf <<- 'EOF'
-	ip_vs
-	ip_vs_rr
-	ip_vs_wrr
-	ip_vs_sh
-	nf_conntrack
+		ip_vs
+		ip_vs_rr
+		ip_vs_wrr
+		ip_vs_sh
+		nf_conntrack
 	EOF
 fi
 
@@ -155,23 +155,23 @@ apt-get install -y \
 
 # Add the Open Container Initiative Package Sources List
 cat > /etc/apt/sources.list.d/libcontainers-sources.list <<- EOF
-deb [signed-by=${libcontainers_keyring}] ${libcontainers_repo_url}/${crio_os}/ /
+	deb [signed-by=${libcontainers_keyring}] ${libcontainers_repo_url}/${crio_os}/ /
 EOF
 
 # Add the Container Runtime Interface Package Sources List
 cat > /etc/apt/sources.list.d/cri-o-sources.list <<- EOF
-deb [signed-by=${crio_keyring}] ${libcontainers_repo_url}:/cri-o:/${CRIO_VERSION}/${crio_os}/ /
+	deb [signed-by=${crio_keyring}] ${libcontainers_repo_url}:/cri-o:/${CRIO_VERSION}/${crio_os}/ /
 EOF
 
 # Download the Open Container Initiative Repository Key Ring
-rm -f "${libcontainers_keyring}"  # Remove existing to allow updates.
-curl -L "${libcontainers_repo_url}/${crio_os}/Release.key" \
-	| gpg --dearmor -o "${libcontainers_keyring}"
+rm -f "${libcontainers_keyring}" # Remove existing to allow updates.
+curl -L "${libcontainers_repo_url}/${crio_os}/Release.key" |
+	gpg --dearmor -o "${libcontainers_keyring}"
 
 # Download the Container Runtime Interface Repository Key Ring
-rm -f "${crio_keyring}"  # Remove existing to allow updates.
-curl -L "${libcontainers_repo_url}:/cri-o:/${CRIO_VERSION}/${crio_os}/Release.key" \
-	| gpg --dearmor -o "${crio_keyring}"
+rm -f "${crio_keyring}" # Remove existing to allow updates.
+curl -L "${libcontainers_repo_url}:/cri-o:/${CRIO_VERSION}/${crio_os}/Release.key" |
+	gpg --dearmor -o "${crio_keyring}"
 
 # Update the Apt Cache
 apt-get update
@@ -195,11 +195,11 @@ kubernetes_keyring="/usr/share/keyrings/kubernetes-archive-keyring.gpg"
 
 # Add the Kubernetes Package Sources List
 cat > /etc/apt/sources.list.d/kubernetes-sources.list <<- EOF
-deb [signed-by=${kubernetes_keyring}] https://apt.kubernetes.io/ kubernetes-xenial main
+	deb [signed-by=${kubernetes_keyring}] https://apt.kubernetes.io/ kubernetes-xenial main
 EOF
 
 # Download the Kubernetes Repository Key Ring
-rm -f "${kubernetes_keyring}"  # Remove existing to allow updates.
+rm -f "${kubernetes_keyring}" # Remove existing to allow updates.
 curl -fsSLo "${kubernetes_keyring}" "${kubernetes_repo_url}/apt-key.gpg"
 
 # Update the Apt Cache
@@ -220,6 +220,6 @@ apt-mark hold kubelet kubeadm kubectl
 
 # Reboot Nodes
 printf '%s%s\n' "Rebooting nodes, next steps are to initialize the cluster" \
-		"from one of the control-plane nodes using kubectl."
+	"from one of the control-plane nodes using kubectl."
 
 reboot
