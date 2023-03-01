@@ -9,6 +9,9 @@ set -o nounset
 : "${USERNAME}"
 : "${SSID}"
 : "${SSID_PASSPHRASE}"
+: "${ETH0_IP}"
+: "${ETH0_BROADCAST:=10.0.1.255}"
+: "${ETH0_NETWORK:=10.0.1.0}"
 
 #
 # Base OS
@@ -99,6 +102,16 @@ systemctl enable iwd
 systemctl enable systemd-resolved
 
 ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+
+# Setup Wired Local Networking
+cat > /etc/network/interfaces.d/eth0 <<- EOF
+	auto eth0
+	iface eth0 inet static
+	  address ${ETH0_IP}/24
+	  broadcast ${ETH0_BROADCAST}
+	  network ${ETH0_NETWORK}
+	iface eth0 inet6 auto
+EOF
 
 # Reboot Nodes
 printf '%s\n' "Rebooting nodes, next steps are to configure the OS for Kubernetes."
