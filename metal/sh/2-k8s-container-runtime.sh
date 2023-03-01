@@ -25,23 +25,23 @@ crio_keyring="/usr/share/keyrings/libcontainers-crio-archive-keyring.gpg"
 
 # Add the Open Container Initiative Package Sources List
 cat > /etc/apt/sources.list.d/libcontainers-sources.list <<- EOF
-deb [signed-by=${libcontainers_keyring}] ${libcontainers_repo_url}/${OS}/ /
+	deb [signed-by=${libcontainers_keyring}] ${libcontainers_repo_url}/${OS}/ /
 EOF
 
 # Add the Container Runtime Interface Package Sources List
 cat > /etc/apt/sources.list.d/cri-o-sources.list <<- EOF
-deb [signed-by=${crio_keyring}] ${libcontainers_repo_url}:/cri-o:/${VERSION}/${OS}/ /
+	deb [signed-by=${crio_keyring}] ${libcontainers_repo_url}:/cri-o:/${VERSION}/${OS}/ /
 EOF
 
 # Download the Open Container Initiative Repository Key Ring
-rm -f "${libcontainers_keyring}"  # Remove existing to allow updates.
-curl -L "${libcontainers_repo_url}/${OS}/Release.key" \
-	| gpg --dearmor -o "${libcontainers_keyring}"
+rm -f "${libcontainers_keyring}" # Remove existing to allow updates.
+curl -L "${libcontainers_repo_url}/${OS}/Release.key" |
+	gpg --dearmor -o "${libcontainers_keyring}"
 
 # Download the Container Runtime Interface Repository Key Ring
-rm -f "${crio_keyring}"  # Remove existing to allow updates.
-curl -L "${libcontainers_repo_url}:/cri-o:/${VERSION}/${OS}/Release.key" \
-	| gpg --dearmor -o "${crio_keyring}"
+rm -f "${crio_keyring}" # Remove existing to allow updates.
+curl -L "${libcontainers_repo_url}:/cri-o:/${VERSION}/${OS}/Release.key" |
+	gpg --dearmor -o "${crio_keyring}"
 
 # Update the Apt Cache
 apt-get update

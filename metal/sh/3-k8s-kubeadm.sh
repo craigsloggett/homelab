@@ -19,11 +19,11 @@ kubernetes_keyring="/usr/share/keyrings/kubernetes-archive-keyring.gpg"
 
 # Add the Kubernetes Package Sources List
 cat > /etc/apt/sources.list.d/kubernetes-sources.list <<- EOF
-deb [signed-by=${kubernetes_keyring}] https://apt.kubernetes.io/ kubernetes-xenial main
+	deb [signed-by=${kubernetes_keyring}] https://apt.kubernetes.io/ kubernetes-xenial main
 EOF
 
 # Download the Kubernetes Repository Key Ring
-rm -f "${kubernetes_keyring}"  # Remove existing to allow updates.
+rm -f "${kubernetes_keyring}" # Remove existing to allow updates.
 curl -fsSLo "${kubernetes_keyring}" "${kubernetes_repo_url}/apt-key.gpg"
 
 # Update the Apt Cache
@@ -43,13 +43,13 @@ apt-mark hold kubelet kubeadm kubectl
 hostname="$(hostname)"
 
 cat > /etc/hosts <<- EOF
-127.0.0.1	${hostname}.localdomain ${hostname}
-::1		${hostname}.localdomain ${hostname} ip6-localhost ip6-loopback
-ff02::1		ip6-allnodes
-ff02::2		ip6-allrouters
+	127.0.0.1 ${hostname}.localdomain ${hostname}
+	::1        ${hostname}.localdomain ${hostname} ip6-localhost ip6-loopback
+	ff02::1    ip6-allnodes
+	ff02::2    ip6-allrouters
 
-${CONTROL_IP}	controller-0
-${NODE_0_IP}	node-0
-${NODE_1_IP}	node-1
-${NODE_2_IP}	node-2
+	${CONTROL_IP} controller-0
+	${NODE_0_IP}  node-0
+	${NODE_1_IP}  node-1
+	${NODE_2_IP}  node-2
 EOF

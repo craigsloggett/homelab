@@ -13,10 +13,10 @@ export LANG=C.UTF-8
 
 # Update the Debian Bullseye Sources List
 cat > /etc/apt/sources.list <<- 'EOF'
-deb http://deb.debian.org/debian bullseye main contrib non-free
-deb http://deb.debian.org/debian bullseye-updates main contrib non-free
-deb http://deb.debian.org/debian bullseye-backports main contrib non-free
-deb http://security.debian.org/debian-security/ bullseye-security main contrib non-free
+	deb http://deb.debian.org/debian bullseye main contrib non-free
+	deb http://deb.debian.org/debian bullseye-updates main contrib non-free
+	deb http://deb.debian.org/debian bullseye-backports main contrib non-free
+	deb http://security.debian.org/debian-security/ bullseye-security main contrib non-free
 EOF
 
 # Update the Apt Cache
@@ -24,7 +24,7 @@ apt-get update
 
 # Add the Locale to Defaults
 cat > /etc/default/locale <<- 'EOF'
-LANG=C.UTF-8
+	LANG=C.UTF-8
 EOF
 
 # Upgrade the System
@@ -42,10 +42,10 @@ apt-get install -y -t bullseye-backports \
 hostname="$(hostname)"
 
 cat > /etc/hosts <<- EOF
-127.0.0.1	${hostname}.localdomain ${hostname}
-::1		${hostname}.localdomain ${hostname} ip6-localhost ip6-loopback
-ff02::1		ip6-allnodes
-ff02::2		ip6-allrouters
+	127.0.0.1 ${hostname}.localdomain ${hostname}
+	::1        ${hostname}.localdomain ${hostname} ip6-localhost ip6-loopback
+	ff02::1    ip6-allnodes
+	ff02::2    ip6-allrouters
 EOF
 
 # Install sudo
@@ -54,8 +54,8 @@ if ! command -v sudo; then
 fi
 
 cat > /etc/sudoers.d/no-password <<- 'EOF'
-# Allow members of group sudo to execute any command without a password
-%sudo	ALL=(ALL:ALL) NOPASSWD:ALL
+	# Allow members of group sudo to execute any command without a password
+	%sudo ALL=(ALL:ALL) NOPASSWD:ALL
 EOF
 
 # Add a Regular User
@@ -67,7 +67,7 @@ fi
 ssh_directory="/home/${USERNAME}/.ssh"
 mkdir -p "${ssh_directory}"
 
-cp /root/.ssh/authorized_keys "${ssh_directory}/authorized_keys" 
+cp /root/.ssh/authorized_keys "${ssh_directory}/authorized_keys"
 
 chmod 700 "${ssh_directory}"
 chmod 600 "${ssh_directory}/authorized_keys"

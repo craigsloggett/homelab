@@ -10,19 +10,19 @@ set -o nounset
 
 # Prepare the kubeadm.conf File
 cat > /etc/kubernetes/kubeadm-config.yaml <<- 'EOF'
-apiVersion: kubeadm.k8s.io/v1beta3
-kind: ClusterConfiguration
-networking:
-  podSubnet: "10.244.0.0/16"
-controlPlaneEndpoint: "controller-0"
+	apiVersion: kubeadm.k8s.io/v1beta3
+	kind: ClusterConfiguration
+	networking:
+	  podSubnet: "10.244.0.0/16"
+	controlPlaneEndpoint: "controller-0"
 
----
+	---
 
-apiVersion: kubeproxy.config.k8s.io/v1alpha1
-kind: KubeProxyConfiguration
-mode: "ipvs"
-ipvs:
-  strictARP: true
+	apiVersion: kubeproxy.config.k8s.io/v1alpha1
+	kind: KubeProxyConfiguration
+	mode: "ipvs"
+	ipvs:
+	  strictARP: true
 EOF
 
 # Initialize the Control Plane

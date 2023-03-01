@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# k8s-container-runtime.sh
+# config-kernel.sh
 
 # Globally enable exit-on-error and require variables to be set.
 set -o errexit
@@ -26,8 +26,8 @@ modprobe br_netfilter
 # Enable iptables Filtering on the Bridge Network
 if ! grep -q 'net.bridge.bridge-nf-call-iptables' /etc/sysctl.d/local.conf; then
 	cat >> /etc/sysctl.d/local.conf <<- 'EOF'
-	net.bridge.bridge-nf-call-iptables = 1
-	net.bridge.bridge-nf-call-ip6tables = 1
+		net.bridge.bridge-nf-call-iptables = 1
+		net.bridge.bridge-nf-call-ip6tables = 1
 	EOF
 fi
 
@@ -43,11 +43,11 @@ fi
 
 if ! grep -q 'ip_vs' /etc/modules-load.d/modules.conf; then
 	cat >> /etc/modules-load.d/modules.conf <<- 'EOF'
-	ip_vs
-	ip_vs_rr
-	ip_vs_wrr
-	ip_vs_sh
-	nf_conntrack
+		ip_vs
+		ip_vs_rr
+		ip_vs_wrr
+		ip_vs_sh
+		nf_conntrack
 	EOF
 fi
 
