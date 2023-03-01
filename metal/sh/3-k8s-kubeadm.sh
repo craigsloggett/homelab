@@ -36,6 +36,9 @@ apt-get -y autoremove
 # Install the Kubernetes Components
 apt-get -y install kubelet kubeadm kubectl
 
+# Restart the Container Runtime Interface
+systemctl restart crio
+
 # Exclude the Kubernetes Packages from System Upgrades
 apt-mark hold kubelet kubeadm kubectl
 
