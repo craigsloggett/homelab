@@ -42,17 +42,18 @@ systemctl restart crio
 # Exclude the Kubernetes Packages from System Upgrades
 apt-mark hold kubelet kubeadm kubectl
 
-# Update the Hosts File with Cluster IPs
-hostname="$(hostname)"
+if ! grep -q 'Kubernetes' /etc/hosts; then
+	cat >> /etc/hosts <<- EOF
 
-cat > /etc/hosts <<- EOF
-	127.0.0.1 ${hostname}.localdomain ${hostname}
-	::1        ${hostname}.localdomain ${hostname} ip6-localhost ip6-loopback
-	ff02::1    ip6-allnodes
-	ff02::2    ip6-allrouters
+		# Kubernetes Nodes
+		${CONTROL_IP} controller-0
+		${NODE_0_IP}  node-0
+		${NODE_1_IP}  node-1
+		${NODE_2_IP}  node-2
+	EOF
+fi
 
-	${CONTROL_IP} controller-0
-	${NODE_0_IP}  node-0
-	${NODE_1_IP}  node-1
-	${NODE_2_IP}  node-2
-EOF
+# Reboot Nodes
+printf '%s\n' "Rebooting nodes, the next step is to initialize the control plane."
+
+reboot
