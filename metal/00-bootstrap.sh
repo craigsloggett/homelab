@@ -88,6 +88,9 @@ update-alternatives --set editor /usr/bin/vim.tiny
 # Setup Wireless Networking
 apt-get install -y iwd
 
+mkdir -p /var/lib/iwd
+mkdir -p /etc/iwd
+
 cat > "/var/lib/iwd/${SSID}.psk" <<- EOF
 	[Security]              
 	Passphrase=${SSID_PASSPHRASE}
