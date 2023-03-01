@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 1-control-plane.sh
+# 10-control-plane.sh
 
 # Globally enable exit-on-error and require variables to be set.
 set -o errexit
@@ -14,14 +14,14 @@ cat > /etc/kubernetes/kubeadm-config.yaml <<- 'EOF'
 	apiVersion: kubeadm.k8s.io/v1beta3
 	kind: InitConfiguration
 	localAPIEndpoint:
-	  advertiseAddress: "192.168.1.110"
+	  advertiseAddress: "10.0.1.110"
 	  bindPort: 6443
 	skipPhases:
 	  - addon/kube-proxy
 	---
 	apiVersion: kubeadm.k8s.io/v1beta3
 	kind: ClusterConfiguration
-	controlPlaneEndpoint: "192.168.1.110:6443"
+	controlPlaneEndpoint: "10.0.1.110:6443"
 	networking:
 	  serviceSubnet: "10.96.0.0/16"
 	  podSubnet: "10.32.0.0/16"
