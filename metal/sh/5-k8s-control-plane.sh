@@ -7,25 +7,34 @@ set -o errexit
 set -o nounset
 
 : "${USERNAME}"
+: "${CONTROLLER_IP:=192.168.1.110}"
+: "${SERVICE_CIDR:=10.96.0.0/12}"
+: "${POD_CIDR:=10.32.0.0/12}"
 
 # Prepare the kubeadm.conf File
-cat > /etc/kubernetes/kubeadm-config.yaml <<- 'EOF'
+cat > /etc/kubernetes/kubeadm-config.yaml <<- EOF
 	---
 	apiVersion: kubeadm.k8s.io/v1beta3
 	kind: InitConfiguration
 	localAPIEndpoint:
-	  advertiseAddress: "192.168.1.110"
+	  advertiseAddress: "${CONTROLLER_IP}"
 	  bindPort: 6443
-	skipPhases:
-	  - addon/kube-proxy
+	nodeRegistration:
+	  criSocket: unix:///var/run/crio/crio.sock
 	---
 	apiVersion: kubeadm.k8s.io/v1beta3
 	kind: ClusterConfiguration
-	controlPlaneEndpoint: "192.168.1.110:6443"
+	controlPlaneEndpoint: "${CONTROLLER_IP}:6443"
 	networking:
-	  serviceSubnet: "10.96.0.0/16"
-	  podSubnet: "10.32.0.0/16"
+	  serviceSubnet: "${SERVICE_CIDR}"
+	  podSubnet: "${POD_CIDR}"
 	  dnsDomain: "cluster.local"
+	---
+	apiVersion: kubeproxy.config.k8s.io/v1alpha1
+	kind: KubeProxyConfiguration
+	mode: "ipvs"
+	ipvs:
+	  strictARP: true
 EOF
 
 # Initialize the Control Plane

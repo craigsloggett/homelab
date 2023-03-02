@@ -10,3 +10,86 @@ These scripts are meant to be run in order on all nodes up until `4-kubeadm.sh`.
 all nodes will be rebooted and the rest of the scripts must be run on the control plane nodes.
 
 **TODO**: Research more on bare metal K8s network add-ons.
+
+## CRI-O
+
+The CRI-O project packages for Debian such that you can install the container engine using `apt`. First we need to install the necessary dependencies to add an Apt repository to the system:
+
+```shell
+apt install curl gnupg apt-transport-https ca-certificates
+```
+
+We will be using the bundled `runc` to ensure the version of `cri-o` installed works with the version of `runc` installed. Since we're using the packaged version, there's no additional configuration required to make it work.
+
+The container network plugins will be installed separately during the Kubernetes tooling setup and configuration.
+
+To check the version of `cri-o` installed:
+
+```shell
+crio --version
+```
+
+## kubelet
+
+### cgroup Driver
+
+> The Container runtimes page explains that the `systemd` driver is recommended for kubeadm based setups instead of the `cgroupfs` driver, because kubeadm manages the kubelet as a systemd service.
+
+> **Note:** In v1.22, if the user is not setting the cgroupDriver field under KubeletConfiguration, kubeadm will default it to systemd.
+
+Since we are installing a version later than `v1.22`, we don't need to specify this configuration (as it is the default).
+
+## Control Plane
+
+The default Service CIDR is `10.96.0.0/12`
+The default Pod CIDR is `10.32.0.0/12`
+
+We need to update the `criSocket` configuration to point to `unix:///var/run/crio/crio.sock` (instead of the default `containerd` configuration).
+
+We have added the `kube-proxy` configuration to `kubeadm-config.yaml` in order to support MetalLB's required configuration later.
+
+## Pod Network Add-on
+
+Since we're using the Kubernetes default pod CIDR (`10.32.0.0/12`), we need to update the configuration.
+
+This is located in this repo under: `cluster/kube-system/kube-flannel.yml`
+
+It has been formatted according to `yamllint` to fix any errors.
+
+The only line that has been changed is under the `ConfigMap`:
+
+```json
+"Network": "10.32.0.0/12"
+```
+
+Copy the updated configuration to one of the control plane nodes:
+
+```shell
+scp kube-flannel.yaml root@192.168.1.110:~
+```
+
+To install this run the following command on one of the control plane nodes:
+
+```shell
+kubectl apply -f kube-flannel.yaml
+```
+
+## Worker Nodes
+
+Now it's time to join all of the worker nodes to the cluster. The `kubeadm init` command provided output for this, follow that to join the rest of the nodes.
+
+## MetalLB
+
+The `kube-proxy` configuration has been updated to enable strict ARP by default as part of the kubeadm init configuration:
+
+Copy the updated configuration to one of the control plane nodes:
+
+```shell
+scp metallb-native.yaml root@192.168.1.110:~
+```
+
+To install this run the following command on one of the control plane nodes:
+
+```shell
+kubectl apply -f metallb-native.yaml
+```
