@@ -46,7 +46,7 @@ if ! grep -q 'Kubernetes' /etc/hosts; then
 	cat >> /etc/hosts <<- EOF
 
 		# Kubernetes Nodes
-		${CONTROL_IP} controller-0
+		${CONTROL_IP}  controller-0
 		${NODE_0_IP}  node-0
 		${NODE_1_IP}  node-1
 		${NODE_2_IP}  node-2
