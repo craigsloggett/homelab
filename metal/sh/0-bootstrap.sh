@@ -59,7 +59,7 @@ cat > /etc/sudoers.d/no-password <<- 'EOF'
 EOF
 
 # Add a Regular User
-if ! id "${USERNAME}"; then
+if ! id "${USERNAME}" 2> /dev/null; then
 	useradd -ms /bin/bash -G sudo "${USERNAME}"
 fi
 
