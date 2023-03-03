@@ -64,16 +64,12 @@ Now it's time to join all of the worker nodes to the cluster. The `kubeadm init`
 
 ## MetalLB
 
-The `kube-proxy` configuration has been updated to enable strict ARP by default as part of the kubeadm init configuration:
+**TODO:** Move this to be deployed by flux.
 
-Copy the updated configuration to one of the control plane nodes:
-
-```shell
-scp metallb-native.yaml root@192.168.1.110:~
-```
+The `kube-proxy` configuration has been updated to enable strict ARP by default as part of the kubeadm init configuration.
 
 To install this run the following command on one of the control plane nodes:
 
 ```shell
-kubectl apply -f metallb-native.yaml
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml
 ```
