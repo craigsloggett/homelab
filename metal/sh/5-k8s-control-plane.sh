@@ -8,8 +8,8 @@ set -o nounset
 
 : "${USERNAME}"
 : "${CONTROLLER_IP:=192.168.1.110}"
-: "${SERVICE_CIDR:=10.96.0.0/12}"
-: "${POD_CIDR:=10.32.0.0/12}"
+: "${SERVICE_CIDR:=10.96.0.0/16}"
+: "${POD_CIDR:=10.244.0.0/16}"
 
 # Prepare the kubeadm.conf File
 cat > /etc/kubernetes/kubeadm-config.yaml <<- EOF
